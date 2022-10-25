@@ -1,0 +1,153 @@
+查看、配置网络接口
+ifconfig
+ip add
+
+
+监控服务器
+top
+1
+b
+x
+按照cpu使用率排序
+shift+p
+按内存使用排序
+shift+m
+按cpu使用的总时间排序
+shift+t
+自由选择排序列
+shift+>  shift+<
+
+查看某个用户的进程情况
+top -u user
+查看内存情况
+free -h
+释放buff/cache内存
+echo 1 > /proc/sys/vm/drop_caches
+echo 2 > /proc/sys/vm/drop_caches
+echo 3 > /proc/sys/vm/drop_caches
+
+
+
+
+监控单个进程
+top -p 进程ID
+
+监控单个进程的线程
+top -H -p 进程ID
+
+查看当前的资源限制 
+ulimit -a
+
+查看进程的IO访问量
+lsof -p 进程ID|wc -l 
+
+
+查找Java进程
+ps -ef|grep java
+
+监控Java线程数
+ps -eLf|grep java|wc -l
+
+获取某个进程中运行的线程数量
+ls /proc/进程ID/task |wc -l
+
+监控网络客户连接数
+netstat -n|grep tcp|grep 80|wc -l
+查看端口使用情况
+netstat -tlpn
+统计tcp连接
+netstat -an|awk '/tcp/{print $6}'|sort|uniq -c
+
+
+
+
+删除文件
+rm 文件名
+
+删除目录
+rm -r 目录名
+
+解压zip文件到当前目录
+unzip 文件名
+
+解压.tar.gz文件到当前目录
+tar -zxvf 文件名
+
+重命名文件/目录
+mv 旧文件名 新文件名
+
+移动文件/目录
+mv 旧文件路径 新文件路径
+
+
+
+查看目录所在分区的磁盘使用情况
+df -h /usr
+查看目录的文件系统类型（type列）
+df -hT /usr
+查看所有已挂载的磁盘使用情况
+df -lh
+
+查看某个目录的文件大小
+du -sh /usr/local/
+查看某个目录下每个目录的文件大小
+du -h /usr/local/
+
+查看硬盘分区情况（包括挂载和未挂载两种硬盘大小）
+fdisk -l
+查看磁盘设备
+fdisk -l|grep "Disk /dev/sd"
+查看磁盘的分区信息
+fdisk /dev/sdc
+p
+n
+p
+1
+默认，回车
+设置磁盘大小（默认全部）
+p
+w
+将分区信息写入磁盘
+partprobe /dev/sdc
+格式化分区为xfs
+mkfs.xfs /dev/sdc1 
+将其他格式强制格式化为xfs
+mkfs.xfs -f /dev/sdc1 
+创建目录
+mkdir /test
+挂载目录
+mount /dev/sdc1 /test
+移除挂载
+umount /test
+
+lvm(Logical Volume Manager)逻辑卷管理
+pv=>vg=>lv
+pvscan
+pvcreate /dev/sdc1
+vgextend VolGroup /dev/sdc1
+vgscan
+lvextend -L +50G /dev/VolGroup/lv_root
+df -h /usr
+xfs_growfs /dev/VolGroup/lv_root
+df -h /usr
+
+
+查看cpu
+cat /proc/cpuinfo |grep "model name" && cat /proc/cpuinfo |grep "physical id"
+查看内存总量
+cat /proc/meminfo |grep MemTotal
+查看空闲内存总量
+cat /proc/meminfo |grep MemFree
+查看磁盘大小
+fdisk -l|grep "Disk /dev/sd"
+expr `lsblk | grep disk | grep G | awk '{ print $4 }' | sed 's/G//g' | xargs | sed 's/ / + /g'`
+
+
+
+一般是加了磁盘之后，创建pv，然后扩容到一个vg组，再统一分配到那个lv，再扩容到目录
+你刚才截图里还有一个sdc，那个还没进行lvm扩容，这个11G可以扩容到某个目录，sdc处理后也可以
+lsblk
+fdisk -l |grep Disk
+pvs
+vgs
+lvs
